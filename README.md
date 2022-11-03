@@ -1,4 +1,11 @@
 # PITheremin #
 End-Of-Year Project source code for the PI Theremin.
-Look and see, you might find something you like.
+
+
+
+
+Created by Josiah Anyinsah-Bondzie
+Final Year: Digital Technologies & Solutions 
+Coventry University
+
 

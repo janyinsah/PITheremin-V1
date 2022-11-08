@@ -9,7 +9,7 @@ class AudioSamples:
     samples= 44100 #Number of samples
     x = np.arange(samples)
 
-def gen_sine_wave(sine_y):
+def gen_sine_wave():
     
     #Generating the Sound Wave (Sine) for the PI Theremin.
     sine_y = 100*np.sin(2 * np.pi * AudioSamples.freq * AudioSamples.x / AudioSamples.s_rate)

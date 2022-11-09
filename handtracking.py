@@ -6,7 +6,7 @@ import numpy as np
 #It will be easier to use these instead of calling the path everytime it needs to be used.
 
 class track_hands:
-
+    draw_styles = mp.solutions.drawing_styles
     draw_my_hands = mp.solutions.drawing_utils
     class_of_hands = mp.solutions.hands
     webcam = cv2.VideoCapture(0)
@@ -27,16 +27,14 @@ class track_hands:
                 for hand_landmarks in results.multi_hand_landmarks: #For each landmark in the total of hand mark items
                     draw_my_hands.draw_landmarks(frame, hand_landmarks, class_of_hands.HAND_CONNECTIONS) #Calls the drawing utils method defined above using draw my hands 
                     #then labels them across each node in each hand landmark from the class of hands method.
-
-            def get_specific_hlm(results):
+                
+            def get_my_styles(results):
                 lh = np.array([[res.x, res.y, res.z]  for res in results.left_hand_landmarks.landmark]).flatten() if results.left_hand_landmarks else np.zeros(21*3)
                 rh = np.array([[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmark]).flatten() if results.right_hand_landmarks else np.zeros(21*3)
                 return np.concatenate([ lh, rh])
 
             if cv2.waitKey(1) == 27: #Frame remains open untill a esc is pressed.
                 break
-
-    
 
     cv2.destroyAllWindows() # destroy all windows after the while loop is broken.
     webcam.release() # camera is released and no longer being used.

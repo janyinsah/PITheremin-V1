@@ -10,7 +10,7 @@ class generateSound:
 
     class SoundAudio(generate_wave.AudioSamples):
         volume = 0.5 #Initial volume set volume
-        duration = 5.0 #How long the sine wave will play.
+        duration = 1/generate_wave.AudioSamples.freq #How long the sine wave will play.
 
     num_samples = int(generate_wave.AudioSamples.freq * SoundAudio.duration)
     samples = (SoundAudio.volume * generate_wave.gen_sine_wave().astype(np.float32))

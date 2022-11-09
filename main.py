@@ -3,10 +3,11 @@ import mediapipe
 import cv2
 import generate_sound
 import generate_wave
-import handtracking#
+from handtracking import track_hands
 
 def main():
-    print("PI Theremin loaded.")
+    print("PI Theremin.")
+
 
 if __name__ == "__main__":
     main()

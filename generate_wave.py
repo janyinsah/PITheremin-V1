@@ -8,10 +8,11 @@ class AudioSamples:
     s_rate = 44100 #Sampling Rate
     freq= 440.0 #Frequency (Hz)
     samples= 44100 #Number of samples
+    volume = 0.5 #Initial volume set volume
+    duration = 1/freq #How long the sine wave will play.
     x = np.arange(samples)
 
 def gen_sine_wave():
-
     #Generating the Sound Wave (Sine) for the PI Theremin.
     sine_y = 100*np.sin(2 * np.pi * AudioSamples.freq * AudioSamples.x / AudioSamples.s_rate)
     return sine_y

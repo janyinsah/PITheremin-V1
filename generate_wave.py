@@ -15,7 +15,7 @@ class AudioSamples:
 def gen_sine_wave():
     #Generating the Sound Wave (Sine) for the PI Theremin.
     sine_y = 100*np.sin(2 * np.pi * AudioSamples.freq * AudioSamples.x / AudioSamples.s_rate)
-    return sine_y
+    return sine_y 
 
 
 

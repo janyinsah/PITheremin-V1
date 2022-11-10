@@ -2,7 +2,7 @@
 import time
 import numpy as np
 import pyaudio
-import generate_wave
+import generate_wave as gw
 from scipy import signal
 
 def play_sound(): #Declaring the sound as a function. 
@@ -10,16 +10,15 @@ def play_sound(): #Declaring the sound as a function.
 
     aud = pyaudio.PyAudio() #Define pyaudio product module
 
-    num_samples = int(generate_wave.AudioSamples.freq * generate_wave.AudioSamples.duration)
-    samples = (generate_wave.AudioSamples.volume * generate_wave.gen_sine_wave().astype(np.float32))
+    num_samples = int(gw.AudioSamples.freq * gw.AudioSamples.duration)
+    samples = (gw.AudioSamples.volume * gw.gen_sine_wave().astype(np.float32))
 
 #Convert to bytes
-    output_bytes = (generate_wave.AudioSamples.volume * samples).tobytes()
+    output_bytes = (gw.AudioSamples.volume * samples).tobytes()
 
 #Create volume stream uplaod to pyaudio file format.
-    stream = aud.open(format = pyaudio.paFloat32, channels = 1, rate = generate_wave.AudioSamples.s_rate, output = True)
+    stream = aud.open(format = pyaudio.paFloat32, channels = 1, rate = gw.AudioSamples.s_rate, output = True)
 
-    stream.write((generate_wave.AudioSamples.volume * samples).tobytes())
-
+    stream.write((gw.AudioSamples.volume * samples).tobytes())
 
 play_sound()

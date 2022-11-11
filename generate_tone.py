@@ -1,4 +1,5 @@
 # Function which generates tone for the Pi Theremin.
+import time
 from psonic import *
 from client import *
 
@@ -9,8 +10,10 @@ post = connect_to_client()
 
 #---------------------------------------------------
 #test python-sonic api by sending a note the DAW server interface.
-notes  = play(70)
-post.send_message("/osc/generate_tone", notes)
+while True:
+    n  = synth(SINE)
+    post.send_message('/trigger/tone', n)
+    sleep(0.5)
 
 
 

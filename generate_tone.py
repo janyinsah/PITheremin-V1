@@ -1,20 +1,26 @@
 # Function which generates tone for the Pi Theremin.
 from psonic import *
-import pythonosc
 from client import *
 
-# Connect Script to Sonic PI.
+#---------------------------------------------------
+# 'post' sends the script message to the Sonic PI interface.
 
-parcel = call_client()
+post = connect_to_client()
+
+#---------------------------------------------------
+#test python-sonic api by sending a note the DAW server interface.
+notes  = play(70)
+post.send_message("/osc/generate_tone", notes)
 
 
-# Create function which generates a waveform tone for the PI Theremin.
 
-while True:
-    note = play(70)
-    parcel.send_message('/play_tone', note)
-    print(note)
-    sleep(1)
+
+
+
+
+
+
+
 
 
 

@@ -5,18 +5,19 @@ from client import *
 
 # Connect Script to Sonic PI.
 
-clent_connect = client_attributes.client
+parcel = call_client()
 
-create_client()
 
 # Create function which generates a waveform tone for the PI Theremin.
 
-def generate_sine_wave():
-    sine_wave = False
-    while True:
-        if sine_wave:
-            use_synth(SINE)
-            sleep(0.25)
-        else:
-            continue 
+while True:
+    note = play(70)
+    parcel.send_message('/play_tone', note)
+    print(note)
+    sleep(1)
+
+
+
+
+        
 

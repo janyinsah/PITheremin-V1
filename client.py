@@ -1,4 +1,8 @@
 #This creates a UPD client in which will allow python scripts to talk with the sonic pi client.
+                    #Created by Josiah Anyinsah-Bondzie
+#---------------------------------------------------------
+                #OSC Client - Reusable
+                #This file will be used for other future projects.
 #---------------------------------------------------------
 import argparse
 import time

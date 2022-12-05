@@ -18,9 +18,10 @@ class hand_coords():
     hand_gesture_y = 50 #Amplitude (Volume)
 #---------------------------------------------------------
 #Infinite loop which determines the length of time of which the sine wave will play.
-while True:
+while True: 
     a = C5
-    post.send_message('/osc/trigger/sine', a)
+    n = play(C5)
+    post.send_message('/osc/trigger/sine', )
 #---------------------------------------------------------
 
 

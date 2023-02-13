@@ -8,6 +8,7 @@ The way it will work is that it uses python scripts to get readigns from a hand 
 It then relays the information to OSC messages which are read by Sonic PI, a Digital Audio Interface which generates the sound and tonation for the PI Theremin.
 
 
+609IT 
 Created by Josiah Anyinsah-Bondzie
 Final Year: Digital Technologies & Solutions 
 Coventry University

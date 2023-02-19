@@ -11,5 +11,3 @@ import handtrack
 #'post' sends the script message to the Sonic PI interface.
 post = connect_to_client('127.0.0.1', 4560)
 #---------------------------------------------------------
-
-

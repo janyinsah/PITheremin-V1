@@ -1,5 +1,5 @@
 #----------------------------------------------------------------
-#Import Modues for the client file.
+# Import Modues for the client file.
 import argparse
 import random
 import time

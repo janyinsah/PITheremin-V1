@@ -23,10 +23,6 @@ frequency = 440
 amplitude = 0.5 
 duration = 5
 #----------------------------------------------------------------
-# Using psonic libraries to generate sine wave tone.
-use_synth(SINE)
-play(frequency, sustain=duration, amp=amplitude)
-#----------------------------------------------------------------
 # Open up webcam and capture video by initialising each frame on cap
 while True:
     camera = cv2.VideoCapture(0)
@@ -48,20 +44,16 @@ while True:
             for every_landmark_item in hand_detected.multi_hand_landmarks:
                 mp_drawing.draw_landmarks(frame, every_landmark_item, connections=mp_hands.HAND_CONNECTIONS)
 
-            left_hand_landmarks = hand_landmark_items_first if len(hand_detected.multi_hand_landmarks) >= 1 else None
-            right_hand_landmarks = hand_detected.multi_hand_landmarks[1] if len(hand_detected.multi_hand_landmarks) >= 2 else None
-#----------------------------------------------------------------
-     # Get co-ordination point for both left hand and right hand.
-            pitch = every_landmark_item.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y * 100
-            volume = every_landmark_item.landmark[mp_hands.HandLandmark.WRIST].x * 100
+                l_hand_x = every_landmark_item.landmark[mp_hands.HandLandmark.WRIST].x * 100
+                l_hand_y = every_landmark_item.landmark[mp_hands.HandLandmark.WRIST].y * 100
+                r_hand_x = every_landmark_item.landmark[mp_hands.HandLandmark.THUMB_TIP].x * 100    
+                r_hand_y = every_landmark_item.landmark[mp_hands.HandLandmark.THUMB_TIP].y * 100
 #----------------------------------------------------------------
             # Display handlandmark co-ordinations on opencv window.
-            cv2.putText(frame, f'Pitch: {pitch} Hz', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
-            cv2.putText(frame, f'Volume: {volume:.2f}', (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
+            cv2.putText(frame, f'Pitch: {l_hand_x, l_hand_y} Hz', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
+            cv2.putText(frame, f'Volume: {r_hand_x, r_hand_y}', (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
             # Send values of hand landmarks, to represent and change pitch and volume via osc messages.
-            message.send_message("/osc/synth", ["pitch", pitch])
-            message.send_message("/osc/synth", ["amp", volume])
-
+            message.send_message("/osc/hand_location", [l_hand_x, l_hand_y, r_hand_x, r_hand_y])
             time.sleep(0.1)
     
     # This will display the hand landmark (joints) on the cv2 webcam window.

@@ -4,15 +4,29 @@
 #---------------------------------------------------------------
 use_osc "127.0.0.1", 8000
 
-define :continuous_sine_wave do
-  pitch = args[0]
-  amp = args[1]
-  use_synth :sine 
-  play pitch, amp: volume
+pitch = 50
+volume = 0.5
+
+# Listens for x, y values of left and right hand from python.
+live_loop :listen_on_osc do
+  use_real_time
+  co_ordinate = sync "/osc/hand_location"
+  l_hand_x = co_ordinate[0]
+  l_hand_y = co_ordinate[1]
+  r_hand_x = co_ordinate[2]
+  r_hand_y = co_ordinate[3]
+  
+  # Sets the range of pitch between values 40 and 80 and then determines 0 as the minimum and 1 as the maximum.
+  pitch_range = range(40..80)
+  pitch = map(l_hand_x, 0, 1, pitch_range.min, pitch_range.max)
+  
+  # Same thing has pitch above but done for volume on the right hand instead.
+  volume_range = range(0..1)
+  volume = map(r_hand_x, 0, 1, volume_range.min, volume_range.max)
 end
 
-
-live_loop :listen_on_osc do
-  sync "/osc/synth"
-  args = sync "/osc/snyth"
+live_loop :sine_wave do
+  use_synth :subpulse
+  play pitch, amp: volume
+  sleep 0.1
 end

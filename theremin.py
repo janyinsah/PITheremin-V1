@@ -1,47 +1,75 @@
 # PI THEREMIN - 609IT END OF YEAR PROJECT
 # CREATED BY JOSIAH ANYINSAH-BONDZIE
 # STUDENT ID: 8624637
-
 #---------------------------------------------------------------
 # Modules needed for the creation of the PI Theremin.
 import cv2
 import mediapipe as mp
 import uuid
 import os
-import numpy as np
-from client import * 
+import client
+from psonic import *
+import time
 #----------------------------------------------------------------
 # Draw Hands -  Define Hand Solutions
 mp_drawing = mp.solutions.drawing_utils # Drawing the hand landmarks (joints) to video on webcam.
 mp_hands = mp.solutions.hands # Actual hand detection.
 mp_drawing_styles = mp.solutions.drawing_styles # Style for hand detection.
+# Define OSC Client connection from client python library. 
+message = client.connect_to_client('127.0.0.1', 4556)
+# Define Sine Wave attributes for python-sonic to send osc messages to.
+frequency = 440
+amplitude = 0.5 
+duration = 5
+#----------------------------------------------------------------
+# Using psonic libraries to generate sine wave tone.
+use_synth(SINE)
+play(frequency, sustain=duration, amp=amplitude)
 #----------------------------------------------------------------
 # Open up webcam and capture video by initialising each frame on cap
-camera = cv2.VideoCapture(0)
-while camera.isOpened():
-    ret, frame = camera.read()
-    cv2.imshow('Hand Tracking', frame)
+while True:
+    camera = cv2.VideoCapture(0)
+    while camera.isOpened():
+        ret, frame = camera.read()
+        cv2.imshow('Hand Tracking', frame)
 
-    if cv2.waitKey(5) and 'OxFF' == ord('q'):
-        break
-        camera.release()
-        cv2.destroyAllWindows()
+    # Apply hand tracking.
+        frame.flags.writeable = False
+        frame = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+        hand_detected = mp_hands.Hands(max_num_hands=2).process(frame)
 #----------------------------------------------------------------
-# Apply hand landmark tracking.
-    frame = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
-    hand_detected = mp_hands.Hands(max_num_hands=2).process(frame)
-#----------------------------------------------------------------
-# Draw landmarks onto image.
-    frame = cv2.cvtColor(frame,cv2.COLOR_RGB2BGR)
-    if hand_detected.multi_hand_landmarks:
-        for every_finger in hand_detected.multi_hand_landmarks:
-            mp_drawing.draw_landmarks(frame, every_finger, connections=mp_hands.HAND_CONNECTIONS)
-            
-#----------------------------------------------------------------
-# Get hand landmark data.
+# Draw hands onto image (webcam).
+        frame.flags.writeable = True
+        frame = cv2.cvtColor(frame,cv2.COLOR_RGB2BGR)
+        if hand_detected.multi_hand_landmarks:
+        # To get the first hand we index the landmarks at 0 as max_num_hands = 2 that means in the array of hands detected it must be 0 and 1.
+            hand_landmark_items_first = hand_detected.multi_hand_landmarks[0]
+            for every_landmark_item in hand_detected.multi_hand_landmarks:
+                mp_drawing.draw_landmarks(frame, every_landmark_item, connections=mp_hands.HAND_CONNECTIONS)
 
-#----------------------------------------------------------------
-# Main Program, run.
-#----------------------------------------------------------------
+            left_hand_landmarks = hand_landmark_items_first if len(hand_detected.multi_hand_landmarks) >= 1 else None
+            right_hand_landmarks = hand_detected.multi_hand_landmarks[1] if len(hand_detected.multi_hand_landmarks) >= 2 else None
 
- 
+     # Get co-ordination point for both left hand and right hand.
+            #pitch = int(left_hand_landmarks[0].y * 100)
+            #volume = int(right_hand_landmarks[0].y * 100)
+            pitch = left_hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x
+            volume = right_hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x
+        #pitch = hand_landmark_items.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y * 880 + 110
+        #volume = hand_landmark_items.landmark[mp_hands.HandLandmark.WRIST].x
+
+            cv2.putText(frame, f'Pitch: {pitch} Hz', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
+            cv2.putText(frame, f'Volume: {volume:.2f}', (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
+
+            message.send_message("/osc/synth", ["pitch", pitch])
+            message.send_message("/osc/synth", ["amp", volume])
+
+            time.sleep(0.1)
+    
+    # This will display the hand landmark (joints) on the cv2 webcam window.
+        cv2.imshow("Hand Tracking", frame)
+    # Display current pitch, and volume values based on hand landmark input.
+        if cv2.waitKey(5) and 'OxFF' == ord('q'):
+            break
+            camera.release()
+            cv2.destroyAllWindows()

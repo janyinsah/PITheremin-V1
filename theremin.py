@@ -16,7 +16,8 @@ mp_drawing = mp.solutions.drawing_utils # Drawing the hand landmarks (joints) to
 mp_hands = mp.solutions.hands # Actual hand detection.
 mp_drawing_styles = mp.solutions.drawing_styles # Style for hand detection.
 # Define OSC Client connection from client python library. 
-message = client.connect_to_client('127.0.0.1', 4556)
+set_server_parameter('127.0.0.1', 4560)
+message = client.connect_to_client('127.0.0.1', 4560)
 # Define Sine Wave attributes for python-sonic to send osc messages to.
 frequency = 440
 amplitude = 0.5 
@@ -49,18 +50,15 @@ while True:
 
             left_hand_landmarks = hand_landmark_items_first if len(hand_detected.multi_hand_landmarks) >= 1 else None
             right_hand_landmarks = hand_detected.multi_hand_landmarks[1] if len(hand_detected.multi_hand_landmarks) >= 2 else None
-
+#----------------------------------------------------------------
      # Get co-ordination point for both left hand and right hand.
-            #pitch = int(left_hand_landmarks[0].y * 100)
-            #volume = int(right_hand_landmarks[0].y * 100)
-            pitch = left_hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x
-            volume = right_hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x
-        #pitch = hand_landmark_items.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y * 880 + 110
-        #volume = hand_landmark_items.landmark[mp_hands.HandLandmark.WRIST].x
-
+            pitch = every_landmark_item.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y * 100
+            volume = every_landmark_item.landmark[mp_hands.HandLandmark.WRIST].x * 100
+#----------------------------------------------------------------
+            # Display handlandmark co-ordinations on opencv window.
             cv2.putText(frame, f'Pitch: {pitch} Hz', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
             cv2.putText(frame, f'Volume: {volume:.2f}', (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
-
+            # Send values of hand landmarks, to represent and change pitch and volume via osc messages.
             message.send_message("/osc/synth", ["pitch", pitch])
             message.send_message("/osc/synth", ["amp", volume])
 

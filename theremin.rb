@@ -4,17 +4,14 @@
 #---------------------------------------------------------------
 use_osc "127.0.0.1", 8000 # Detect local python mesasges on port 8000
 
-pitch = 50
-volume = 0.5
+
 #---------------------------------------------------------------
 # Listens for x, y values of left and right hand from python.
 live_loop :listen_on_osc do
   use_real_time
   co_ordinate = sync "/osc/hand_location"
-  l_hand_x = co_ordinate[0]
-  l_hand_y = co_ordinate[1]
-  r_hand_x = co_ordinate[2]
-  r_hand_y = co_ordinate[3]
+  l_hand_y = co_ordinate[0]
+  r_hand_y = co_ordinate[1]
   #---------------------------------------------------------------
   # Sets the range of pitch between values 40 and 80 and then determines 0 as the minimum and 1 as the maximum.
   pitch_range = range(30..90)
@@ -25,7 +22,7 @@ live_loop :listen_on_osc do
   volume = map(r_hand_y, 0.2, 1, volume_range.min, volume_range.max)
 end
 #---------------------------------------------------------------
-# Updates the pitch and volume values based on hand positions received
+# Updates the pitch and volume values based on the y co-ordinates of the hand.
 
 live_loop :sine_wave do
   use_synth :subpulse

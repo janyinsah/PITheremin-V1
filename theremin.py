@@ -50,8 +50,8 @@ while True:
                 r_hand_y = every_landmark_item.landmark[mp_hands.HandLandmark.THUMB_TIP].y * 100
 #----------------------------------------------------------------
             # Display handlandmark co-ordinations on opencv window.
-            cv2.putText(frame, f'Pitch: {l_hand_x, l_hand_y} Hz', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
-            cv2.putText(frame, f'Volume: {r_hand_x, r_hand_y}', (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
+            cv2.putText(frame, f'Pitch: {l_hand_y} Hz', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
+            cv2.putText(frame, f'Volume: {r_hand_y}', (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
             # Send values of hand landmarks, to represent and change pitch and volume via osc messages.
             message.send_message("/osc/hand_location", [l_hand_x, l_hand_y, r_hand_x, r_hand_y])
             time.sleep(0.1)
